@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context = ".ToDoListManagerActivity"
+    android:theme="@style/AlertDialog.AppCompat.Light"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="ADD ITEM"
+        android:id="@+id/addDialod_headline_txt"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/btnOK"
+        android:clickable="true"
+        android:layout_below="@+id/datePicker"
+        android:layout_alignRight="@+id/addDialog_text_editText"
+        android:layout_alignEnd="@+id/addDialog_text_editText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:id="@+id/btnCancel"
+        android:clickable="true"
+        android:layout_below="@+id/datePicker"
+        android:layout_alignLeft="@+id/addDialog_text_editText"
+        android:layout_alignStart="@+id/addDialog_text_editText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addDialog_text_editText"
+        android:width="200dp"
+        android:layout_below="@+id/addDialod_headline_txt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp" />
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/datePicker"
+        android:datePickerMode="spinner"
+        android:spinnersShown="true"
+        android:nestedScrollingEnabled="false"
+        android:calendarViewShown="false"
+        android:layout_below="@+id/addDialog_text_editText"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
