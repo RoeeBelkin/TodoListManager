@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,8 @@ import java.util.Date;
 
 public class ToDoListManagerActivity extends Activity {
    private static final int REQUEST_CODE_ADD_DIALOG = 1;
+
+    private todo_db DB;
     private Button addButton;
     private ListView lv;
 //    private TextView tv;
@@ -40,9 +43,19 @@ public class ToDoListManagerActivity extends Activity {
         strArr = new ArrayList<ListViewItems>();
         adapter = new myAdapter();
         lv = (ListView)findViewById(R.id.listView);
+        DB = new todo_db(this, "todo_db", null,1);
+//        DB.dropTable();
+        DB.createNewTable();
+
+
 
         registerForContextMenu(lv);
         lv.setAdapter(adapter);
+
+        if (DB.isTableExist()){
+            strArr.addAll(DB.getDBItems());
+            adapter.notifyDataSetChanged();
+        }
 
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +90,10 @@ public class ToDoListManagerActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //remove item
-                        strArr.remove(position);
+                        DB.deleteRow(strArr.get(position).getItem(), strArr.get(position).getDueDate());
+                        strArr.clear();
+                        strArr.addAll(DB.getDBItems());
+//                      strArr.remove(position);
                         adapter.notifyDataSetChanged();
                         dialog.cancel();
                     }
@@ -104,6 +120,8 @@ public class ToDoListManagerActivity extends Activity {
 
     }
 
+
+
     public void openAddDialog(View v){
         Intent intent = new Intent(ToDoListManagerActivity.this,AddNewTodoItemActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_DIALOG);
@@ -119,11 +137,16 @@ public class ToDoListManagerActivity extends Activity {
                 long dueDate = data.getLongExtra("dueDate",-1);
                 ListViewItems newItem = new ListViewItems(txt, dueDate);
 
-                strArr.add(newItem);
+//                strArr.add(newItem);
+                DB.insertRow(txt, dueDate);
+
+                strArr.clear();
+                strArr.addAll(DB.getDBItems());
+
                 adapter.sort(new Comparator<ListViewItems>() {
                     @Override
                     public int compare(ListViewItems lhs, ListViewItems rhs) {
-                        if (lhs.getDueDate()-rhs.getDueDate() <0) {
+                        if (lhs.getDueDate() - rhs.getDueDate() < 0) {
                             return -1;
                         }
                         return 1;
@@ -163,13 +186,14 @@ public class ToDoListManagerActivity extends Activity {
 //    }
 
     private class myAdapter extends ArrayAdapter<ListViewItems> {
-       public myAdapter(){
+       public myAdapter() {
            super(ToDoListManagerActivity.this, R.layout.view_items, strArr);
 
        }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             View itemView = convertView;
             if (itemView == null){
                 itemView = (getLayoutInflater()).inflate(R.layout.view_items,parent,false);
